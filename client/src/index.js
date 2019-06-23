@@ -11,6 +11,8 @@ import Splash from "./components/pages/Splash";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
+import "./index.css";
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,
