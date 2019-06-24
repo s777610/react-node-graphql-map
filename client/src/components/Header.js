@@ -6,19 +6,21 @@ import Toolbar from "@material-ui/core/Toolbar";
 import MapIcon from "@material-ui/icons/Map";
 import Typography from "@material-ui/core/Typography";
 
+import Signout from "./Auth/Signout";
+
 const Header = ({ currentUser }) => {
   return (
-    <div className="root">
+    <div className="header">
       <AppBar position="static">
         <Toolbar>
-          <div className="grow">
+          <div className="header__item">
             <MapIcon className="icon" />
             <Typography component="h1" variant="h6" color="inherit" noWrap>
               GeoPins
             </Typography>
           </div>
           {currentUser && (
-            <div className="grow">
+            <div className="header__item">
               <img
                 className="picture"
                 src={currentUser.picture}
@@ -29,6 +31,7 @@ const Header = ({ currentUser }) => {
               </Typography>
             </div>
           )}
+          <Signout />
         </Toolbar>
       </AppBar>
     </div>

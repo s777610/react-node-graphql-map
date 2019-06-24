@@ -6,14 +6,14 @@
   align-items: center;
 }
 
-.root {
+.header {
   flex-grow: 1;
-}
 
-.grow {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
+  &__item {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+  }
 }
 
 .icon {
@@ -30,4 +30,14 @@
   height: 50px;
   border-radius: 90%;
   //   marginRight: theme.spacing.unit * 2
+}
+
+.logout {
+  cursor: pointer;
+  display: flex;
+
+  &__button-icon {
+    margin-left: 5px;
+    color: orange;
+  }
 }
