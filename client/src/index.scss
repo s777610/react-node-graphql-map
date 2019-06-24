@@ -5,3 +5,29 @@
   flex-direction: column;
   align-items: center;
 }
+
+.root {
+  flex-grow: 1;
+}
+
+.grow {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.icon {
+  //marginRight: theme.spacing.unit,
+  color: green;
+  font-size: 45px;
+}
+
+.mobile {
+  display: none;
+}
+
+.picture {
+  height: 50px;
+  border-radius: 90%;
+  //   marginRight: theme.spacing.unit * 2
+}

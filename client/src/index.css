@@ -14,4 +14,36 @@
       -ms-flex-align: center;
           align-items: center;
 }
+
+.root {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+.grow {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.icon {
+  color: green;
+  font-size: 45px;
+}
+
+.mobile {
+  display: none;
+}
+
+.picture {
+  height: 50px;
+  border-radius: 90%;
+}
 /*# sourceMappingURL=index.css.map */
