@@ -2,12 +2,12 @@ import React from "react";
 import { GraphQLClient } from "graphql-request"; // great library!! no Apollo
 import { GoogleLogin } from "react-google-login";
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/user";
+import { loginUser, isLoggedIn } from "../../actions/user";
 import { ME_QUERY } from "../../graphql/queries";
 
 import Typography from "@material-ui/core/Typography";
 
-const Login = ({ classes, loginUser }) => {
+const Login = ({ classes, loginUser, isLoggedIn }) => {
   const onSuccess = async googleUser => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
@@ -16,6 +16,7 @@ const Login = ({ classes, loginUser }) => {
       });
       const data = await client.request(ME_QUERY);
       loginUser(data.me);
+      isLoggedIn(googleUser.isSignedIn());
     } catch (err) {
       onFailure(err);
     }
@@ -47,5 +48,5 @@ const Login = ({ classes, loginUser }) => {
 
 export default connect(
   null,
-  { loginUser }
+  { loginUser, isLoggedIn }
 )(Login);

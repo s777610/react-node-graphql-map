@@ -1,8 +1,16 @@
 import React from "react";
 import Login from "../Auth/Login";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
-const Splash = () => {
-  return <Login />;
+const Splash = ({ isAuth }) => {
+  return isAuth ? <Redirect to="/" /> : <Login />;
 };
 
-export default Splash;
+const mapStateToProps = state => {
+  return {
+    isAuth: state.user.isAuth
+  };
+};
+
+export default connect(mapStateToProps)(Splash);

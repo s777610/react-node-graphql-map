@@ -8,6 +8,7 @@ import reducers from "./reducer/index";
 
 import App from "./components/pages/App";
 import Splash from "./components/pages/Splash";
+import ProtectedRoute from "./ProtectedRoute";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -24,7 +25,7 @@ const Root = () => {
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route exact path="/" component={App} />
+          <ProtectedRoute exact path="/" component={App} />
           <Route path="/login" component={Splash} />
         </Switch>
       </Router>

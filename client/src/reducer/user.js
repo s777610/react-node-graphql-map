@@ -1,7 +1,8 @@
-import { LOGIN_USER } from "../actions/type";
+import { LOGIN_USER, IS_LOGGED_IN } from "../actions/type";
 
 const INITIAL_STATE = {
-  currentUser: null
+  currentUser: null,
+  isAuth: false
 };
 
 export default function userReducer(state = INITIAL_STATE, action) {
@@ -10,6 +11,11 @@ export default function userReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         currentUser: action.payload
+      };
+    case IS_LOGGED_IN:
+      return {
+        ...state,
+        isAuth: action.payload
       };
     default:
       return state;
