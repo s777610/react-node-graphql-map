@@ -33,7 +33,7 @@
           align-items: center;
 }
 
-.icon {
+.logoIcon {
   color: green;
   font-size: 45px;
 }
@@ -57,5 +57,18 @@
 .logout__button-icon {
   margin-left: 5px;
   color: orange;
+}
+
+.map {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.navigationControl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1em;
 }
 /*# sourceMappingURL=index.css.map */

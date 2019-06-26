@@ -16,7 +16,7 @@
   }
 }
 
-.icon {
+.logoIcon {
   //marginRight: theme.spacing.unit,
   color: green;
   font-size: 45px;
@@ -40,4 +40,44 @@
     margin-left: 5px;
     color: orange;
   }
+}
+
+// const styles = {
+
+//   rootMobile: {
+//     display: "flex",
+//     flexDirection: "column-reverse"
+//   },
+//   navigationControl: {
+//     position: "absolute",
+//     top: 0,
+//     left: 0,
+//     margin: "1em"
+//   },
+//   deleteIcon: {
+//     color: "red"
+//   },
+//   popupImage: {
+//     padding: "0.4em",
+//     height: 200,
+//     width: 200,
+//     objectFit: "cover"
+//   },
+//   popupTab: {
+//     display: "flex",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     flexDirection: "column"
+//   }
+// };
+
+.map {
+  display: flex;
+}
+
+.navigationControl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1em;
 }

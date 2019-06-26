@@ -14,7 +14,7 @@ const Header = ({ currentUser }) => {
       <AppBar position="static">
         <Toolbar>
           <div className="header__item">
-            <MapIcon className="icon" />
+            <MapIcon className="logoIcon" />
             <Typography component="h1" variant="h6" color="inherit" noWrap>
               GeoPins
             </Typography>
