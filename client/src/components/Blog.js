@@ -1,9 +1,27 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-// import { Paper } from "@material-ui/core";
+import { connect } from "react-redux";
+import NoContent from "./Pin/NoContent";
+import CreatePin from "./Pin/CreatePin";
 
-const Blog = ({ classes }) => {
-  return <div>Blog</div>;
+import { Paper } from "@material-ui/core";
+
+const Blog = ({ classes, draft }) => {
+  let BlogContent;
+
+  if (!draft) {
+    // nocontent
+    BlogContent = NoContent;
+  } else if (draft) {
+    // create pin
+    BlogContent = CreatePin;
+  }
+
+  return (
+    <Paper className={classes.root}>
+      <BlogContent />
+    </Paper>
+  );
 };
 
 const styles = {
@@ -23,4 +41,12 @@ const styles = {
   }
 };
 
-export default withStyles(styles)(Blog);
+const mapStateToProps = state => {
+  return {
+    draft: state.map.draft
+  };
+};
+
+const wrapped = withStyles(styles)(Blog);
+
+export default connect(mapStateToProps)(wrapped);
