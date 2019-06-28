@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { GraphQLClient } from "graphql-request";
+import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -9,11 +11,13 @@ import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
 import { deleteDraft } from "../../actions/map";
 import { connect } from "react-redux";
+import { CREATE_PIN_MUTATION } from "../../graphql/mutations";
 
-const CreatePin = ({ classes, deleteDraft }) => {
+const CreatePin = ({ classes, deleteDraft, location }) => {
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleDeleteDraft = () => {
     setTitle("");
@@ -22,9 +26,53 @@ const CreatePin = ({ classes, deleteDraft }) => {
     deleteDraft();
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    console.log({ title, image, content });
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", "geopins");
+    data.append("cloud_name", "s777610");
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/s777610/image/upload",
+      data
+    );
+
+    return res.data.url;
+  };
+
+  const handleSubmit = async event => {
+    try {
+      event.preventDefault();
+      setSubmitting(true);
+
+      // get the token
+      const idtToken = window.gapi.auth2
+        .getAuthInstance()
+        .currentUser.get()
+        .getAuthResponse().id_token;
+
+      // create the gql client
+      const client = new GraphQLClient("http://localhost:4000/graphql", {
+        headers: { authorization: idtToken }
+      });
+
+      // upload the image first
+      const url = await handleImageUpload();
+
+      const { latitude, longitude } = location;
+      const variables = { title, image: url, content, latitude, longitude };
+
+      // make a mutation to gql api
+      const { createPin } = await client.request(
+        CREATE_PIN_MUTATION,
+        variables
+      );
+
+      console.log("Pin created", { createPin });
+      handleDeleteDraft();
+    } catch (err) {
+      setSubmitting(false);
+      console.error("Error creating pin, ", err);
+    }
   };
 
   return (
@@ -90,7 +138,7 @@ const CreatePin = ({ classes, deleteDraft }) => {
           className={classes.button}
           variant="contained"
           color="secondary"
-          disabled={!title.trim() || !content.trim() || !image}
+          disabled={!title.trim() || !content.trim() || !image || submitting}
           onClick={handleSubmit}
         >
           Submit
@@ -141,9 +189,15 @@ const styles = theme => ({
   }
 });
 
+const mapStateToProps = state => {
+  return {
+    location: state.map.draft
+  };
+};
+
 const wrapped = withStyles(styles)(CreatePin);
 
 export default connect(
-  null,
+  mapStateToProps,
   { deleteDraft }
 )(wrapped);
