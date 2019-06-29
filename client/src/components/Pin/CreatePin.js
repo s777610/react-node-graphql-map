@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { GraphQLClient } from "graphql-request";
 import axios from "axios";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -9,11 +8,15 @@ import AddAPhotoIcon from "@material-ui/icons/AddAPhotoTwoTone";
 import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
 import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
-import { deleteDraft } from "../../actions/map";
+import { deleteDraft, createPinCreator } from "../../actions/map";
 import { connect } from "react-redux";
 import { CREATE_PIN_MUTATION } from "../../graphql/mutations";
+import { useClient } from "../../graphql/gqlClient";
 
-const CreatePin = ({ classes, deleteDraft, location }) => {
+const CreatePin = ({ classes, deleteDraft, location, createPinCreator }) => {
+  // hook into gql client
+  const client = useClient();
+
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
@@ -44,17 +47,6 @@ const CreatePin = ({ classes, deleteDraft, location }) => {
       event.preventDefault();
       setSubmitting(true);
 
-      // get the token
-      const idtToken = window.gapi.auth2
-        .getAuthInstance()
-        .currentUser.get()
-        .getAuthResponse().id_token;
-
-      // create the gql client
-      const client = new GraphQLClient("http://localhost:4000/graphql", {
-        headers: { authorization: idtToken }
-      });
-
       // upload the image first
       const url = await handleImageUpload();
 
@@ -67,7 +59,7 @@ const CreatePin = ({ classes, deleteDraft, location }) => {
         variables
       );
 
-      console.log("Pin created", { createPin });
+      createPinCreator(createPin);
       handleDeleteDraft();
     } catch (err) {
       setSubmitting(false);
@@ -199,5 +191,5 @@ const wrapped = withStyles(styles)(CreatePin);
 
 export default connect(
   mapStateToProps,
-  { deleteDraft }
+  { deleteDraft, createPinCreator }
 )(wrapped);

@@ -1,11 +1,14 @@
 import {
   CREATE_DRAFT,
   UPDATE_DRAFT_LOCATION,
-  DELETE_DRAFT
+  DELETE_DRAFT,
+  GET_PINS,
+  CREATE_PIN
 } from "../actions/type";
 
 const INITIAL_STATE = {
-  draft: null
+  draft: null,
+  pins: []
 };
 
 export default function mapReducer(state = INITIAL_STATE, action) {
@@ -19,7 +22,6 @@ export default function mapReducer(state = INITIAL_STATE, action) {
         }
       };
     case UPDATE_DRAFT_LOCATION:
-      console.log("mapReducer", action.payload);
       return {
         ...state,
         draft: action.payload
@@ -28,6 +30,18 @@ export default function mapReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         draft: null
+      };
+    case GET_PINS:
+      return {
+        ...state,
+        pins: action.payload
+      };
+    case CREATE_PIN:
+      const newPin = action.payload;
+      const prevPins = state.pins.filter(pin => pin._id !== newPin._id);
+      return {
+        ...state,
+        pins: [...prevPins, newPin]
       };
     default:
       return state;
