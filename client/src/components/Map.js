@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
-import ReactMapGL, { NavigationControl, Marker } from "react-map-gl";
+import ReactMapGL, { NavigationControl, Marker, Popup } from "react-map-gl";
 import { connect } from "react-redux";
 import {
   createDraft,
   updateDraftLocation,
-  getPinsCreator
+  getPinsCreator,
+  setPin,
+  deletePinCreator
 } from "../actions/map";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
-// import Button from "@material-ui/core/Button";
-// import Typography from "@material-ui/core/Typography";
-// import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
 
 import { useClient } from "../graphql/gqlClient";
 import { GET_PIN_QUERY } from "../graphql/queries";
+import { DELETE_PIN_MUTATION } from "../graphql/mutations";
 import PinIcon from "./PinIcon";
 import Blog from "./Blog";
 
@@ -28,7 +31,10 @@ const Map = ({
   createDraft,
   updateDraftLocation,
   pins,
-  getPinsCreator
+  getPinsCreator,
+  setPin,
+  currentUser,
+  deletePinCreator
 }) => {
   const client = useClient();
 
@@ -42,6 +48,9 @@ const Map = ({
   useEffect(() => {
     getUserPosition();
   }, []);
+
+  // popup is pin
+  const [popup, setPopup] = useState(null);
 
   const getUserPosition = () => {
     if ("geolocation" in navigator) {
@@ -72,6 +81,21 @@ const Map = ({
     const isNewPin =
       differenceInMinutes(Date.now(), Number(pin.createdAt)) <= 30;
     return isNewPin ? "limegreen" : "darknlue";
+  };
+
+  const handleSelectPin = pin => {
+    setPopup(pin);
+    setPin(pin);
+  };
+
+  const isAuthUser = () => currentUser._id === popup.author._id;
+
+  const handleDeletePin = async pin => {
+    const variables = { pinId: pin._id };
+
+    const { deletePin } = await client.request(DELETE_PIN_MUTATION, variables);
+    deletePinCreator(deletePin);
+    setPopup(null);
   };
 
   return (
@@ -121,10 +145,36 @@ const Map = ({
               offsetLeft={-19}
               offsetTop={-37}
             >
-              <PinIcon size={40} color={highlightNewPin(pin)} />
+              <PinIcon
+                onClick={() => handleSelectPin(pin)}
+                size={40}
+                color={highlightNewPin(pin)}
+              />
             </Marker>
           );
         })}
+
+        {popup && (
+          <Popup
+            anchor="top"
+            latitude={popup.latitude}
+            longitude={popup.longitude}
+            closeOnClick={false}
+            onClose={() => setPopup(null)}
+          >
+            <img className="popup__image" src={popup.image} alt={popup.title} />
+            <div className="popup__tab">
+              <Typography>
+                {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
+              </Typography>
+              {isAuthUser() && (
+                <Button onClick={() => handleDeletePin(popup)}>
+                  <DeleteIcon className="popup__tab__delete" />
+                </Button>
+              )}
+            </div>
+          </Popup>
+        )}
       </ReactMapGL>
 
       <Blog />
@@ -135,11 +185,12 @@ const Map = ({
 const mapStateToProps = state => {
   return {
     draft: state.map.draft,
-    pins: state.map.pins
+    pins: state.map.pins,
+    currentUser: state.user.currentUser
   };
 };
 
 export default connect(
   mapStateToProps,
-  { createDraft, updateDraftLocation, getPinsCreator }
+  { createDraft, updateDraftLocation, getPinsCreator, setPin, deletePinCreator }
 )(Map);

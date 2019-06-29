@@ -3,7 +3,9 @@ import {
   UPDATE_DRAFT_LOCATION,
   DELETE_DRAFT,
   GET_PINS,
-  CREATE_PIN
+  CREATE_PIN,
+  SET_PIN,
+  DELETE_PIN
 } from "./type";
 
 export const createDraft = () => {
@@ -36,5 +38,16 @@ export const createPinCreator = createPin => {
   return {
     type: CREATE_PIN,
     payload: createPin
+  };
+};
+
+export const setPin = pin => {
+  return { type: SET_PIN, payload: pin };
+};
+
+export const deletePinCreator = deletePin => {
+  return {
+    type: DELETE_PIN,
+    payload: deletePin
   };
 };

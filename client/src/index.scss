@@ -43,7 +43,6 @@
 }
 
 // const styles = {
-
 //   rootMobile: {
 //     display: "flex",
 //     flexDirection: "column-reverse"
@@ -54,22 +53,6 @@
 //     left: 0,
 //     margin: "1em"
 //   },
-//   deleteIcon: {
-//     color: "red"
-//   },
-//   popupImage: {
-//     padding: "0.4em",
-//     height: 200,
-//     width: 200,
-//     objectFit: "cover"
-//   },
-//   popupTab: {
-//     display: "flex",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     flexDirection: "column"
-//   }
-// };
 
 .map {
   display: flex;
@@ -80,4 +63,24 @@
   top: 0;
   left: 0;
   margin: 1em;
+}
+
+.popup {
+  &__image {
+    padding: 0.4em;
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+  }
+
+  &__tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &__delete {
+      color: red;
+    }
+  }
 }
