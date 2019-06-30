@@ -3,18 +3,21 @@ import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import NoContent from "./Pin/NoContent";
 import CreatePin from "./Pin/CreatePin";
+import PinContent from "./Pin/PinContent";
 
 import { Paper } from "@material-ui/core";
 
-const Blog = ({ classes, draft }) => {
+const Blog = ({ classes, draft, currentPin }) => {
   let BlogContent;
 
-  if (!draft) {
+  if (!draft && !currentPin) {
     // nocontent
     BlogContent = NoContent;
-  } else if (draft) {
+  } else if (draft && !currentPin) {
     // create pin
     BlogContent = CreatePin;
+  } else if (!draft && currentPin) {
+    BlogContent = PinContent;
   }
 
   return (
@@ -43,7 +46,8 @@ const styles = {
 
 const mapStateToProps = state => {
   return {
-    draft: state.map.draft
+    draft: state.map.draft,
+    currentPin: state.map.currentPin
   };
 };
 
