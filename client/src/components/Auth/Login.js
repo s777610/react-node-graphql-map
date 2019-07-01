@@ -8,7 +8,7 @@ import { BASE_URL } from "../../graphql/gqlClient";
 
 import Typography from "@material-ui/core/Typography";
 
-const Login = ({ classes, loginUser, isLoggedIn }) => {
+const Login = ({ loginUser, isLoggedIn }) => {
   const onSuccess = async googleUser => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
@@ -25,6 +25,7 @@ const Login = ({ classes, loginUser, isLoggedIn }) => {
 
   const onFailure = err => {
     console.error(`Error logging in ${err}`);
+    isLoggedIn(false);
   };
 
   return (

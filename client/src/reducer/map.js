@@ -5,7 +5,8 @@ import {
   GET_PINS,
   CREATE_PIN,
   SET_PIN,
-  DELETE_PIN
+  DELETE_PIN,
+  CREATE_COMMENT
 } from "../actions/type";
 
 const INITIAL_STATE = {
@@ -60,6 +61,17 @@ export default function mapReducer(state = INITIAL_STATE, action) {
         ...state,
         pins: filteredPins,
         currentPin: null
+      };
+    case CREATE_COMMENT:
+      const updatedCurrentPin = action.payload;
+      // find and replace
+      const updatedPins = state.pins.map(pin => {
+        return pin._id === updatedCurrentPin._id ? updatedCurrentPin : pin;
+      });
+      return {
+        ...state,
+        pins: updatedPins,
+        currentPin: updatedCurrentPin
       };
     default:
       return state;

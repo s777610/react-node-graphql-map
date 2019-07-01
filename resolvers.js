@@ -34,6 +34,19 @@ module.exports = {
       // exec() return the promise
       const pinDeleted = await Pin.findOneAndDelete({ _id: args.pinId }).exec();
       return pinDeleted;
+    }),
+    createComment: authenticated(async (parent, args, context, info) => {
+      const newComment = { text: args.text, author: context.currentUser._id };
+      console.log("api createComment", newComment);
+      const pinUpdated = await Pin.findOneAndUpdate(
+        { _id: args.pinId },
+        { $push: { comments: newComment } },
+        { new: true }
+      )
+        .populate("author")
+        .populate("comments.author");
+
+      return pinUpdated;
     })
   }
 };

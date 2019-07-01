@@ -5,7 +5,8 @@ import {
   GET_PINS,
   CREATE_PIN,
   SET_PIN,
-  DELETE_PIN
+  DELETE_PIN,
+  CREATE_COMMENT
 } from "./type";
 
 export const createDraft = () => {
@@ -49,5 +50,12 @@ export const deletePinCreator = deletePin => {
   return {
     type: DELETE_PIN,
     payload: deletePin
+  };
+};
+
+export const createCommentCreator = createComment => {
+  return {
+    type: CREATE_COMMENT,
+    payload: createComment
   };
 };

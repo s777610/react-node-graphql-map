@@ -11,8 +11,6 @@ import { connect } from "react-redux";
 const PinContent = ({ classes, currentPin }) => {
   const { title, content, author, createdAt, comments } = currentPin;
 
-  console.log("PinContent", currentPin);
-
   return (
     <div className={classes.root}>
       <Typography component="h2" variant="h4" color="primary" gutterBottom>
