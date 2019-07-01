@@ -9,20 +9,16 @@ import { connect } from "react-redux";
 
 import { CREATE_COMMENT_MUTATION } from "../../graphql/mutations";
 import { useClient } from "../../graphql/gqlClient";
-import { createCommentCreator } from "../../actions/map";
 
-const CreateComment = ({ classes, currentPin, createCommentCreator }) => {
+const CreateComment = ({ classes, currentPin }) => {
   const client = useClient();
   const [comment, setComment] = useState("");
 
   const handleSubmitComment = async () => {
     const variables = { pinId: currentPin._id, text: comment };
 
-    const { createComment } = await client.request(
-      CREATE_COMMENT_MUTATION,
-      variables
-    );
-    createCommentCreator(createComment);
+    await client.request(CREATE_COMMENT_MUTATION, variables);
+
     setComment("");
   };
 
@@ -82,7 +78,4 @@ const mapStateToProps = state => {
 
 const wrapped = withStyles(styles)(CreateComment);
 
-export default connect(
-  mapStateToProps,
-  { createCommentCreator }
-)(wrapped);
+export default connect(mapStateToProps)(wrapped);

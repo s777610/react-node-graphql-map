@@ -60,13 +60,15 @@ module.exports = {
   },
   Subscription: {
     pinAdded: {
-      subscribe: () => pubsub.asyncIterator(PIN_ADDED)
+      subscribe: () => {
+        return pubsub.asyncIterator([PIN_ADDED]);
+      }
     },
     pinDeleted: {
-      subscribe: () => pubsub.asyncIterator(PIN_DELETED)
+      subscribe: () => pubsub.asyncIterator([PIN_DELETED])
     },
     pinUpdated: {
-      subscribe: () => pubsub.asyncIterator(PIN_UPDATED)
+      subscribe: () => pubsub.asyncIterator([PIN_UPDATED])
     }
   }
 };

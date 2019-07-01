@@ -6,17 +6,25 @@ import {
   updateDraftLocation,
   getPinsCreator,
   setPin,
-  deletePinCreator
+  deletePinCreator,
+  createPinCreator,
+  createCommentCreator
 } from "../actions/map";
 import differenceInMinutes from "date-fns/difference_in_minutes";
 
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import { Subscription } from "react-apollo";
 
 import { useClient } from "../graphql/gqlClient";
 import { GET_PIN_QUERY } from "../graphql/queries";
 import { DELETE_PIN_MUTATION } from "../graphql/mutations";
+import {
+  PIN_ADDED_SUBSCRIPTION,
+  PIN_UPDATED_SUBSCRIPTION,
+  PIN_DELETED_SUBSCRIPTION
+} from "../graphql/subscriptions";
 import PinIcon from "./PinIcon";
 import Blog from "./Blog";
 
@@ -34,7 +42,9 @@ const Map = ({
   getPinsCreator,
   setPin,
   currentUser,
-  deletePinCreator
+  createPinCreator,
+  deletePinCreator,
+  createCommentCreator
 }) => {
   const client = useClient();
 
@@ -93,8 +103,8 @@ const Map = ({
   const handleDeletePin = async pin => {
     const variables = { pinId: pin._id };
 
-    const { deletePin } = await client.request(DELETE_PIN_MUTATION, variables);
-    deletePinCreator(deletePin);
+    await client.request(DELETE_PIN_MUTATION, variables);
+
     setPopup(null);
   };
 
@@ -177,6 +187,34 @@ const Map = ({
         )}
       </ReactMapGL>
 
+      {/* Subscriptions for creating / Updating / Deleting Pin */}
+      <Subscription
+        subscription={PIN_ADDED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinAdded } = subscriptionData.data;
+          console.log("Subscription(PIN_ADDED_SUBSCRIPTION): ", pinAdded);
+          createPinCreator(pinAdded);
+        }}
+      />
+      <Subscription
+        subscription={PIN_UPDATED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinUpdated } = subscriptionData.data;
+          console.log("Subscription(PIN_UPDATED_SUBSCRIPTION): ", pinUpdated);
+          createCommentCreator(pinUpdated);
+          // createPinCreator(pinUpdated);
+        }}
+      />
+
+      <Subscription
+        subscription={PIN_DELETED_SUBSCRIPTION}
+        onSubscriptionData={({ subscriptionData }) => {
+          const { pinDeleted } = subscriptionData.data;
+          console.log("Subscription(PIN_DELETED_SUBSCRIPTION): ", pinDeleted);
+          deletePinCreator(pinDeleted);
+        }}
+      />
+
       <Blog />
     </div>
   );
@@ -192,5 +230,13 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createDraft, updateDraftLocation, getPinsCreator, setPin, deletePinCreator }
+  {
+    createDraft,
+    updateDraftLocation,
+    getPinsCreator,
+    setPin,
+    deletePinCreator,
+    createPinCreator,
+    createCommentCreator
+  }
 )(Map);

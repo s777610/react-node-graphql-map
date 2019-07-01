@@ -8,12 +8,12 @@ import AddAPhotoIcon from "@material-ui/icons/AddAPhotoTwoTone";
 import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
 import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
-import { deleteDraft, createPinCreator } from "../../actions/map";
+import { deleteDraft } from "../../actions/map";
 import { connect } from "react-redux";
 import { CREATE_PIN_MUTATION } from "../../graphql/mutations";
 import { useClient } from "../../graphql/gqlClient";
 
-const CreatePin = ({ classes, deleteDraft, location, createPinCreator }) => {
+const CreatePin = ({ classes, deleteDraft, location }) => {
   // hook into gql client
   const client = useClient();
 
@@ -54,12 +54,9 @@ const CreatePin = ({ classes, deleteDraft, location, createPinCreator }) => {
       const variables = { title, image: url, content, latitude, longitude };
 
       // make a mutation to gql api
-      const { createPin } = await client.request(
-        CREATE_PIN_MUTATION,
-        variables
-      );
+      await client.request(CREATE_PIN_MUTATION, variables);
 
-      createPinCreator(createPin);
+      // createPinCreator(createPin);
       handleDeleteDraft();
     } catch (err) {
       setSubmitting(false);
@@ -191,5 +188,5 @@ const wrapped = withStyles(styles)(CreatePin);
 
 export default connect(
   mapStateToProps,
-  { deleteDraft, createPinCreator }
+  { deleteDraft }
 )(wrapped);
