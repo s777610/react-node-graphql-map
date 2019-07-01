@@ -8,12 +8,16 @@ import AddAPhotoIcon from "@material-ui/icons/AddAPhotoTwoTone";
 import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
 import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
+import { unstable_useMediaQuery as useMediaQuery } from "@material-ui/core/useMediaQuery";
+
 import { deleteDraft } from "../../actions/map";
 import { connect } from "react-redux";
 import { CREATE_PIN_MUTATION } from "../../graphql/mutations";
 import { useClient } from "../../graphql/gqlClient";
 
 const CreatePin = ({ classes, deleteDraft, location }) => {
+  const mobileSize = useMediaQuery("(max-width: 650px)");
+
   // hook into gql client
   const client = useClient();
 
@@ -105,7 +109,7 @@ const CreatePin = ({ classes, deleteDraft, location }) => {
           name="content"
           label="Content"
           multiline
-          rows="6"
+          rows={mobileSize ? "3" : "6"}
           margin="normal"
           fullWidth
           variant="outlined"

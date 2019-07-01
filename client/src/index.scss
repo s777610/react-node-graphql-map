@@ -43,7 +43,7 @@
 }
 
 // const styles = {
-//   rootMobile: {
+//   mapMobile: {
 //     display: "flex",
 //     flexDirection: "column-reverse"
 //   },
@@ -56,6 +56,11 @@
 
 .map {
   display: flex;
+}
+
+.mapMobile {
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .navigationControl {

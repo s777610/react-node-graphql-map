@@ -57,10 +57,19 @@ export default function mapReducer(state = INITIAL_STATE, action) {
     case DELETE_PIN:
       const deletedPin = action.payload;
       const filteredPins = state.pins.filter(pin => pin._id !== deletedPin._id);
+      if (state.currentPin) {
+        const isCurrentPin = deletedPin._id === state.currentPin._id;
+        if (isCurrentPin) {
+          return {
+            ...state,
+            pins: filteredPins,
+            currentPin: null
+          };
+        }
+      }
       return {
         ...state,
-        pins: filteredPins,
-        currentPin: null
+        pins: filteredPins
       };
     case CREATE_COMMENT:
       const updatedCurrentPin = action.payload;

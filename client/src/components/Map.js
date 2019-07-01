@@ -15,6 +15,8 @@ import differenceInMinutes from "date-fns/difference_in_minutes";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import { unstable_useMediaQuery as useMediaQuery } from "@material-ui/core/useMediaQuery";
+
 import { Subscription } from "react-apollo";
 
 import { useClient } from "../graphql/gqlClient";
@@ -47,6 +49,7 @@ const Map = ({
   createCommentCreator
 }) => {
   const client = useClient();
+  const mobileSize = useMediaQuery("(max-width: 650px)");
 
   useEffect(() => {
     getPins();
@@ -61,6 +64,15 @@ const Map = ({
 
   // popup is pin
   const [popup, setPopup] = useState(null);
+
+  // remove popup if pin itself is deleted
+  useEffect(() => {
+    const pinExists =
+      popup && pins.findIndex(pin => pin._id === popup._id) > -1;
+    if (!pinExists) {
+      setPopup(null);
+    }
+  }, [pins.length]);
 
   const getUserPosition = () => {
     if ("geolocation" in navigator) {
@@ -109,12 +121,13 @@ const Map = ({
   };
 
   return (
-    <div className="map">
+    <div className={mobileSize ? "mapMobile" : "map"}>
       <ReactMapGL
         width="100vw"
         height="calc(100vh - 64px)"
         mapStyle="mapbox://styles/mapbox/streets-v9"
         mapboxApiAccessToken="pk.eyJ1Ijoiczc3NzYxMCIsImEiOiJjanhjc3VoZHkwNnVrM25udWc4aGplZGl6In0.1bpZyYTxE8hh12MmVvyKiw"
+        scrollZoom={!mobileSize}
         onViewportChange={newViewport => setViewport(newViewport)}
         onClick={handleMapClick}
         {...viewport}
@@ -192,7 +205,7 @@ const Map = ({
         subscription={PIN_ADDED_SUBSCRIPTION}
         onSubscriptionData={({ subscriptionData }) => {
           const { pinAdded } = subscriptionData.data;
-          console.log("Subscription(PIN_ADDED_SUBSCRIPTION): ", pinAdded);
+
           createPinCreator(pinAdded);
         }}
       />
@@ -200,7 +213,7 @@ const Map = ({
         subscription={PIN_UPDATED_SUBSCRIPTION}
         onSubscriptionData={({ subscriptionData }) => {
           const { pinUpdated } = subscriptionData.data;
-          console.log("Subscription(PIN_UPDATED_SUBSCRIPTION): ", pinUpdated);
+
           createCommentCreator(pinUpdated);
           // createPinCreator(pinUpdated);
         }}
@@ -210,7 +223,7 @@ const Map = ({
         subscription={PIN_DELETED_SUBSCRIPTION}
         onSubscriptionData={({ subscriptionData }) => {
           const { pinDeleted } = subscriptionData.data;
-          console.log("Subscription(PIN_DELETED_SUBSCRIPTION): ", pinDeleted);
+
           deletePinCreator(pinDeleted);
         }}
       />
